@@ -1,0 +1,28 @@
+---
+# Ansible cloud tools for lab based deployments
+# Copyright (C) 2020  Kevin Carter
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+# All variables intended for modification should be placed in this file.
+
+thinkpad_setup_packages: []
+thinkpad_setup_group_packages: []
+thinkpad_setup_services: []
+thinkpad_setup_files: []
+thinkpad_setup_zsh_install_url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+thinkpad_setup_zsh_external_theme: ""
+thinkpad_setup_zsh_name: bira
+thinkpad_setup_snaps: []

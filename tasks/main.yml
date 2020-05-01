@@ -1,0 +1,110 @@
+---
+# Ansible cloud tools for lab based deployments
+# Copyright (C) 2020  Kevin Carter
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# "ansible_thinkpad_setup" will search for and load any operating system variable file
+
+# found within the "vars/" path. If no OS files are found the task will skip.
+- name: Gather variables for each operating system
+  include_vars: "{{ item }}"
+  with_first_found:
+    - skip: true
+      files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - always
+
+- name: Package install block
+  become: true
+  block:
+    - name: Install packages
+      package:
+        name: "{{ thinkpad_setup_packages }}"
+        state: latest
+      notify:
+        - Notice
+  rescue:
+    - name: Install package with command
+      command: "{{ thinkpad_setup_zsh_package_install }}"
+      notify:
+        - Notice
+
+- name: Copy files into place
+  become: true
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop: "{{ thinkpad_setup_files }}"
+
+- name: Start and enable services
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    daemon_reload: true
+    state: started
+  loop: "{{ thinkpad_setup_services }}"
+
+- name: Create script temp file
+  tempfile:
+    state: file
+    prefix: thinkpad
+  register: zsh_script
+  notify:
+    - Tempfile script cleanup
+
+- name: Get zsh
+  get_url:
+    dest: "{{ zsh_script.path }}"
+    url: "{{ thinkpad_setup_zsh_install_url }}"
+    mode: "0755"
+
+- name: Run zsh setup script
+  command: "{{ zsh_script.path }}"
+  args:
+    creates: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  environment:
+    RUNZSH: true
+    KEEP_ZSHRC: true
+
+- name: Create zshrc
+  template:
+    src: zshrc.j2
+    dest: "{{ ansible_env.HOME }}/.zshrc"
+
+- name: Get external zsh theme
+  get_url:
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/themes/{{ thinkpad_setup_zsh_external_theme | basename }}"
+    url: "{{ thinkpad_setup_zsh_external_theme }}"
+    mode: "0755"
+  when:
+    - (thinkpad_setup_zsh_external_theme | length) > 0
+
+- name: Install snaps
+  snap:
+    name: "{{ thinkpad_setup_snaps }}"
+    classic: true
+
+- name: Run code extension setup
+  command: "code --install-extension {{ item }}"
+  args:
+    creates: "{{ ansible_env.HOME }}/.vscode/extensions/{{ item | lower }}*"
+  loop: "{{ thinkpad_setup_code_extensions }}"

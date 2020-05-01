@@ -1,0 +1,14 @@
+export PATH="${PATH}:${HOME}/.local/bin"
+export ZSH="{{ ansible_env.HOME }}/.oh-my-zsh"
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+setopt extendedglob notify
+bindkey -e
+zstyle :compinstall filename '{{ ansible_env.HOME }}/.zshrc'
+autoload -Uz compinit
+compinit
+ZSH_THEME="{{ thinkpad_setup_zsh_name }}"
+plugins=(git virtualenv)
+source $ZSH/oh-my-zsh.sh
+alias workssh='ssh -o GlobalKnownHostsFile=/dev/null -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'

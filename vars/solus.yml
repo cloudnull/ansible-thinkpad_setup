@@ -1,0 +1,49 @@
+---
+# Ansible cloud tools for lab based deployments
+# Copyright (C) 2020  Kevin Carter
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+thinkpad_setup_packages:
+  - acpid2
+  - brave
+  - flatpak-builder
+  - gcc
+  - git
+  - gnupg
+  - make
+  - powertop
+  - python3-devel
+  - python-cffi
+  - rsync
+  - seahorse
+  - tmux
+  - vim
+  - xev
+  - "-c system.devel"
+
+thinkpad_setup_services:
+  - powertop.service
+
+thinkpad_setup_files:
+  - src: powertop.service
+    dest: /etc/systemd/system/powertop.service
+  - src: thinkpad-acpi.conf.options
+    dest: /usr/lib64/modprobe.d/thinkpad-acpi.conf
+  - src: thinkpad-acpi.conf.module
+    dest: /etc/modules-load.d/thinkpad-acpi.conf
+
+thinkpad_setup_zsh_external_theme: https://gist.githubusercontent.com/cloudnull/4cc7890acaae6cb809e811e09e9eaade/raw/f62c35e3f1a383dbd281fbdaaede00069582141d/solus.zsh-theme
+thinkpad_setup_zsh_name: "{{ thinkpad_setup_zsh_external_theme | basename | replace('.zsh-theme', '') }}"
+thinkpad_setup_zsh_package_install: "eopkg install {{ thinkpad_setup_packages | join(' ') }}"
