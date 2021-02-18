@@ -23,7 +23,7 @@
 
 thinkpad_setup_snaps:
   - spotify
-  - code
+  - signal-desktop
 
 thinkpad_setup_code_extensions:
   - lextudio.restructuredtext
@@ -31,7 +31,6 @@ thinkpad_setup_code_extensions:
   - ms-vscode-remote.remote-ssh
   - ms-vscode-remote.remote-ssh-edit
   - ms-python.python
-  - ms-vscode.Go
   - ms-vsliveshare.vsliveshare
   - ms-vsliveshare.vsliveshare-pack
   - rebornix.ruby

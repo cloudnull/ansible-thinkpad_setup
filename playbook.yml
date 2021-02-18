@@ -18,5 +18,7 @@
 - name: Run laptop setup
   hosts: localhost
   connection: local
+  collections:
+    - community.general
   roles:
     - role: ansible-thinkpad_setup

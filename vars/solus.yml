@@ -17,12 +17,11 @@
 
 thinkpad_setup_packages:
   - acpid2
-  - brave
-  - flatpak-builder
   - gcc
   - git
   - gnupg
   - make
+  - nfs-utils
   - powertop
   - python3-devel
   - python-cffi
@@ -30,7 +29,9 @@ thinkpad_setup_packages:
   - seahorse
   - tmux
   - vim
+  - vscode
   - xev
+  - zsh
   - "-c system.devel"
 
 thinkpad_setup_services:
@@ -46,4 +47,4 @@ thinkpad_setup_files:
 
 thinkpad_setup_zsh_external_theme: https://gist.githubusercontent.com/cloudnull/4cc7890acaae6cb809e811e09e9eaade/raw/f62c35e3f1a383dbd281fbdaaede00069582141d/solus.zsh-theme
 thinkpad_setup_zsh_name: "{{ thinkpad_setup_zsh_external_theme | basename | replace('.zsh-theme', '') }}"
-thinkpad_setup_zsh_package_install: "eopkg install {{ thinkpad_setup_packages | join(' ') }}"
+thinkpad_setup_zsh_package_install: "eopkg install --yes-all {{ thinkpad_setup_packages | join(' ') }}"

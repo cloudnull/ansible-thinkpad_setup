@@ -78,7 +78,7 @@
     mode: "0755"
 
 - name: Run zsh setup script
-  command: "{{ zsh_script.path }}"
+  command: "{{ zsh_script.path }} --unattended"
   args:
     creates: "{{ ansible_env.HOME }}/.oh-my-zsh"
   environment:
@@ -98,7 +98,15 @@
   when:
     - (thinkpad_setup_zsh_external_theme | length) > 0
 
+- name: Link vscode-oss to code
+  become: true
+  file:
+    src: /usr/bin/code-oss
+    dest: /usr/bin/code
+    state: link
+
 - name: Install snaps
+  become: true
   snap:
     name: "{{ thinkpad_setup_snaps }}"
     classic: true
