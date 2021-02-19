@@ -22,6 +22,7 @@ thinkpad_setup_packages:
   - gnupg
   - make
   - nfs-utils
+  - podman
   - powertop
   - python3-devel
   - python-cffi
